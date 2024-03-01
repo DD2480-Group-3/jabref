@@ -79,4 +79,10 @@ public class RemoveLinksToNotExistentFilesTest {
         System.out.println(changes.toString());
         assertFalse(changes.isEmpty());
     }
+
+    @Test
+    void keepLinksToExistingFiles() {
+        List<FieldChange> changes = removeLinks.cleanup(entry);
+        assertTrue(changes.isEmpty());
+    }
 }
