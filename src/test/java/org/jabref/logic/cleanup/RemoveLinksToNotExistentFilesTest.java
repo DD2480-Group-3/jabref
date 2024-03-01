@@ -72,7 +72,6 @@ public class RemoveLinksToNotExistentFilesTest {
     void deleteLinkedFile() {
         fileBefore.toFile().delete();
         List<FieldChange> changes = removeLinks.cleanup(entry);
-        System.out.println(changes.toString());
         assertFalse(changes.isEmpty());
     }
 
