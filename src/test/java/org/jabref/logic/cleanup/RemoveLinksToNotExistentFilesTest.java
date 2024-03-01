@@ -68,12 +68,8 @@ public class RemoveLinksToNotExistentFilesTest {
         removeLinks = new RemoveLinksToNotExistentFiles(databaseContext, filePreferences);
     }
 
-    /**
-     * We deleted a linked file and called cleanup function from RemoveLinksToNotExistentFiles
-     * There must be changes so the assertion is false.
-     */
     @Test
-    void deleteLinkedFileTest() {
+    void deleteLinkedFile() {
         fileBefore.toFile().delete();
         List<FieldChange> changes = removeLinks.cleanup(entry);
         System.out.println(changes.toString());
