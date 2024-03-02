@@ -73,7 +73,6 @@ public class CleanupPresetPanel extends VBox {
                                             .concat(filePreferences.getFileNamePattern());
         cleanupRenamePDFLabel.setText(currentPattern);
 
-        
         cleanUpBibtex.selectedProperty().addListener(
                 (observable, oldValue, newValue) -> {
                     if (newValue) {
