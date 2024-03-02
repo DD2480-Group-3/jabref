@@ -45,7 +45,7 @@
             <Insets left="20.0" />
          </VBox.margin>
          </VBox>
-         <CheckBox fx:id="cleanUpDeletedFiles" text="%Remove links to non-existent files" />
+         <CheckBox fx:id="cleanUpDeletedFiles" text="%Remove links to non existent files" />
       </VBox>
             <FieldFormatterCleanupsPanel fx:id="formatterCleanupsPanel" />
  <padding>
