@@ -33,24 +33,28 @@ public class RemoveLinksToNotExistentFiles implements CleanupJob {
     @Override
     public List<FieldChange> cleanup(BibEntry entry) {
         List<LinkedFile> files = entry.getFiles();
-        List<LinkedFile> files2 = new ArrayList<LinkedFile>();
+        List<LinkedFile> cleanedUpFiles = new ArrayList<>();
         boolean changed = false;
         for (LinkedFile file : files) {
             LinkedFileHandler fileHandler = new LinkedFileHandler(file, entry, databaseContext, filePreferences);
             
-            if (file.isOnlineLink() == false) {
+            if (!file.isOnlineLink()) {
+                
                 Optional<Path> oldFile = file.findIn(databaseContext, filePreferences);
                 
                 if (oldFile.isEmpty()) {
                     changed = true;
                 } else {
-                    files2.add(file);
+                    cleanedUpFiles.add(file);
                 }
+            }
+            else {
+                cleanedUpFiles.add(file);
             }
         }
 
         if (changed) {
-            Optional<FieldChange> changes = entry.setFiles(files2);
+            Optional<FieldChange> changes = entry.setFiles(cleanedUpFiles);
             return OptionalUtil.toList(changes);
         }
 
