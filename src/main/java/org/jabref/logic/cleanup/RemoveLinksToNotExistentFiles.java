@@ -37,17 +37,16 @@ public class RemoveLinksToNotExistentFiles implements CleanupJob {
         boolean changed = false;
         for (LinkedFile file : files) {
             LinkedFileHandler fileHandler = new LinkedFileHandler(file, entry, databaseContext, filePreferences);
-            
+
             if (!file.isOnlineLink()) {
                 Optional<Path> oldFile = file.findIn(databaseContext, filePreferences);
-                
+
                 if (oldFile.isEmpty()) {
                     changed = true;
                 } else {
                     cleanedUpFiles.add(file);
                 }
-            }
-            else {
+            } else {
                 cleanedUpFiles.add(file);
             }
         }

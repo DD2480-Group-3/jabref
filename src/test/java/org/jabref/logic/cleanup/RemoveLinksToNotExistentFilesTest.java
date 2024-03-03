@@ -5,7 +5,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import org.jabref.logic.bibtex.FileFieldWriter;
 import org.jabref.model.FieldChange;
@@ -22,9 +21,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -55,7 +53,7 @@ public class RemoveLinksToNotExistentFilesTest {
         databaseContext.setDatabasePath(bibFolder.resolve("test.bib"));
 
         LinkedFile fileField = new LinkedFile("", fileBefore.toAbsolutePath(), "");
-        
+
         // Entry with one online and one normal linked file
         entry = new BibEntry(StandardEntryType.Article)
                 .withField(StandardField.AUTHOR, "Shatakshi Sharma and Bhim Singh and Sukumar Mishra")
@@ -75,18 +73,18 @@ public class RemoveLinksToNotExistentFilesTest {
                 .withField(StandardField.KEYWORDS, "Batteries, Generators, Economics, Power quality, State of charge, Harmonic analysis, Control systems, Battery, diesel generator (DG), distributed generation, power quality, photovoltaic (PV), voltage source converter (VSC)");
 
         filePreferences = mock(FilePreferences.class);
-        when(filePreferences.shouldStoreFilesRelativeToBibFile()).thenReturn(false); 
+        when(filePreferences.shouldStoreFilesRelativeToBibFile()).thenReturn(false);
         removeLinks = new RemoveLinksToNotExistentFiles(databaseContext, filePreferences);
     }
 
     @Test
     void deleteFileInMultipleLinkedEntry() {
         LinkedFile fileField = new LinkedFile("", fileBefore.toAbsolutePath(), "");
-        FieldChange expectedChange = new FieldChange(entry, StandardField.FILE, 
+        FieldChange expectedChange = new FieldChange(entry, StandardField.FILE,
             FileFieldWriter.getStringRepresentation(Arrays.asList(
             new LinkedFile("", "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8801912:PDF", ""),
             fileField)),
-            FileFieldWriter.getStringRepresentation(new LinkedFile("", "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8801912:PDF", "")) 
+            FileFieldWriter.getStringRepresentation(new LinkedFile("", "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8801912:PDF", ""))
         );
         BibEntry expectedEntry = new BibEntry(StandardEntryType.Article)
         .withField(StandardField.AUTHOR, "Shatakshi Sharma and Bhim Singh and Sukumar Mishra")
@@ -108,7 +106,7 @@ public class RemoveLinksToNotExistentFilesTest {
         List<FieldChange> changes = removeLinks.cleanup(entry);
 
         assertEquals(expectedChange, changes.get(0));
-        assertEquals(expectedEntry, entry); 
+        assertEquals(expectedEntry, entry);
     }
 
     @Test
@@ -134,16 +132,16 @@ public class RemoveLinksToNotExistentFilesTest {
         List<FieldChange> changes = removeLinks.cleanup(entry);
 
         assertTrue(changes.isEmpty());
-        assertEquals(expectedEntry, entry); 
+        assertEquals(expectedEntry, entry);
     }
 
     @Test
     void deleteLinkedFile() {
         LinkedFile fileField = new LinkedFile("", fileBefore.toAbsolutePath(), "");
         entry.setField(StandardField.FILE, FileFieldWriter.getStringRepresentation(fileField)); // There is only one linked file in entry
-        FieldChange expectedChange = new FieldChange(entry, StandardField.FILE, 
+        FieldChange expectedChange = new FieldChange(entry, StandardField.FILE,
             FileFieldWriter.getStringRepresentation(fileField),
-            null); 
+            null);
         BibEntry expectedEntry = new BibEntry(StandardEntryType.Article)
                 .withField(StandardField.AUTHOR, "Shatakshi Sharma and Bhim Singh and Sukumar Mishra")
                 .withField(StandardField.DATE, "April 2020")
@@ -157,11 +155,11 @@ public class RemoveLinksToNotExistentFilesTest {
                 .withField(StandardField.TITLE, "Economic Operation and Quality Control in PV-BES-DG-Based Autonomous System")
                 .withField(StandardField.VOLUME, "16")
                 .withField(StandardField.KEYWORDS, "Batteries, Generators, Economics, Power quality, State of charge, Harmonic analysis, Control systems, Battery, diesel generator (DG), distributed generation, power quality, photovoltaic (PV), voltage source converter (VSC)");
-        
+
         fileBefore.toFile().delete();
         List<FieldChange> changes = removeLinks.cleanup(entry);
 
         assertEquals(expectedChange, changes.get(0));
-        assertEquals(expectedEntry, entry); 
+        assertEquals(expectedEntry, entry);
     }
 }
