@@ -24,7 +24,7 @@ Note that this project **does not** adhere to [Semantic Versioning](https://semv
 - We added the possibility to redownload files that had been present but are no longer in the specified location. [#10848](https://github.com/JabRef/jabref/issues/10848)
 - We added the citation key pattern `[camelN]`. Equivalent to the first N words of the `[camel]` pattern.
 - We added ability to export in CFF (Citation File Format) [#10661](https://github.com/JabRef/jabref/issues/10661).
-- We added CleanupJob for removing non-existent files and added a checkbox for it in Cleanup entries, as well as grouped the checkboxes in Cleanup entries. [#10929] (<https://github.com/JabRef/jabref/issues/10929>)
+- We added a Cleanup for removing non-existent files and grouped the related options [#10929](https://github.com/JabRef/jabref/issues/10929)
 
 ### Changed
 
