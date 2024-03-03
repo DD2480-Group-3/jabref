@@ -128,7 +128,25 @@ public class RemoveLinksToNotExistentFilesTest {
         assertTrue(entry.getFiles().get(0).isOnlineLink());
         assertFalse(entry.getFiles().get(1).isOnlineLink());
 
-        
+        LinkedFile fileField = new LinkedFile("", fileBefore.toAbsolutePath(), "");
+        BibEntry expectedEntry = new BibEntry(StandardEntryType.Article)
+                .withField(StandardField.AUTHOR, "Shatakshi Sharma and Bhim Singh and Sukumar Mishra")
+                .withField(StandardField.DATE, "April 2020")
+                .withField(StandardField.YEAR, "2020")
+                .withField(StandardField.DOI, "10.1109/TII.2019.2935531")
+                .withField(StandardField.FILE, FileFieldWriter.getStringRepresentation(Arrays.asList(
+                    new LinkedFile("", "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8801912:PDF", ""),
+                    fileField)))
+                .withField(StandardField.ISSUE, "4")
+                .withField(StandardField.ISSN, "1941-0050")
+                .withField(StandardField.JOURNALTITLE, "IEEE Transactions on Industrial Informatics")
+                .withField(StandardField.PAGES, "2346--2356")
+                .withField(StandardField.PUBLISHER, "IEEE")
+                .withField(StandardField.TITLE, "Economic Operation and Quality Control in PV-BES-DG-Based Autonomous System")
+                .withField(StandardField.VOLUME, "16")
+                .withField(StandardField.KEYWORDS, "Batteries, Generators, Economics, Power quality, State of charge, Harmonic analysis, Control systems, Battery, diesel generator (DG), distributed generation, power quality, photovoltaic (PV), voltage source converter (VSC)");
+
+        assertEquals(expectedEntry, entry); 
     }
 
     
