@@ -56,8 +56,7 @@ public class RemoveLinksToNotExistentFilesTest {
 
         LinkedFile fileField = new LinkedFile("", fileBefore.toAbsolutePath(), "");
         
-        
-        //Entry with one online and one normal linked file
+        // Entry with one online and one normal linked file
         entry = new BibEntry(StandardEntryType.Article)
                 .withField(StandardField.AUTHOR, "Shatakshi Sharma and Bhim Singh and Sukumar Mishra")
                 .withField(StandardField.DATE, "April 2020")
@@ -75,7 +74,6 @@ public class RemoveLinksToNotExistentFilesTest {
                 .withField(StandardField.VOLUME, "16")
                 .withField(StandardField.KEYWORDS, "Batteries, Generators, Economics, Power quality, State of charge, Harmonic analysis, Control systems, Battery, diesel generator (DG), distributed generation, power quality, photovoltaic (PV), voltage source converter (VSC)");
 
-
         filePreferences = mock(FilePreferences.class);
         when(filePreferences.shouldStoreFilesRelativeToBibFile()).thenReturn(false); 
         removeLinks = new RemoveLinksToNotExistentFiles(databaseContext, filePreferences);
@@ -83,7 +81,13 @@ public class RemoveLinksToNotExistentFilesTest {
 
     @Test
     void deleteLinkedFile() {
-
+        LinkedFile fileField = new LinkedFile("", fileBefore.toAbsolutePath(), "");
+        FieldChange expectedChange = new FieldChange(entry, StandardField.FILE, 
+            FileFieldWriter.getStringRepresentation(Arrays.asList(
+            new LinkedFile("", "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8801912:PDF", ""),
+            fileField)),
+            FileFieldWriter.getStringRepresentation(new LinkedFile("", "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8801912:PDF", "")) 
+        );
         BibEntry expectedEntry = new BibEntry(StandardEntryType.Article)
         .withField(StandardField.AUTHOR, "Shatakshi Sharma and Bhim Singh and Sukumar Mishra")
         .withField(StandardField.DATE, "April 2020")
@@ -100,23 +104,15 @@ public class RemoveLinksToNotExistentFilesTest {
         .withField(StandardField.VOLUME, "16")
         .withField(StandardField.KEYWORDS, "Batteries, Generators, Economics, Power quality, State of charge, Harmonic analysis, Control systems, Battery, diesel generator (DG), distributed generation, power quality, photovoltaic (PV), voltage source converter (VSC)");
 
-        assertEquals(2, entry.getFiles().size()); //Entry has 2 linked files
-
         fileBefore.toFile().delete();
-        
         List<FieldChange> changes = removeLinks.cleanup(entry);
-        
-        assertFalse(changes.isEmpty());
-        
-        assertEquals(1, entry.getFiles().size());
-        assertTrue(entry.getFiles().get(0).isOnlineLink()); //The non-deleted file should be linked online
 
+        assertEquals(expectedChange.toString(), changes.get(0).toString());
         assertEquals(expectedEntry, entry); 
     }
 
     @Test
     void keepLinksToExistingFiles() {
-
         LinkedFile fileField = new LinkedFile("", fileBefore.toAbsolutePath(), "");
         BibEntry expectedEntry = new BibEntry(StandardEntryType.Article)
                 .withField(StandardField.AUTHOR, "Shatakshi Sharma and Bhim Singh and Sukumar Mishra")
@@ -135,18 +131,10 @@ public class RemoveLinksToNotExistentFilesTest {
                 .withField(StandardField.VOLUME, "16")
                 .withField(StandardField.KEYWORDS, "Batteries, Generators, Economics, Power quality, State of charge, Harmonic analysis, Control systems, Battery, diesel generator (DG), distributed generation, power quality, photovoltaic (PV), voltage source converter (VSC)");
 
-        assertEquals(2, entry.getFiles().size());
-
         List<FieldChange> changes = removeLinks.cleanup(entry);
+
         assertTrue(changes.isEmpty());
-
-        assertEquals(2, entry.getFiles().size()); //Since no files deleted the linked files should remain 2
-
-        assertTrue(entry.getFiles().get(0).isOnlineLink());
-        assertFalse(entry.getFiles().get(1).isOnlineLink());
-        
         assertEquals(expectedEntry, entry); 
     }
 
-    
 }
