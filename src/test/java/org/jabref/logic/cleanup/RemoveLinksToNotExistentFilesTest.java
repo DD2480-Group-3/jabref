@@ -107,7 +107,7 @@ public class RemoveLinksToNotExistentFilesTest {
         fileBefore.toFile().delete();
         List<FieldChange> changes = removeLinks.cleanup(entry);
 
-        assertEquals(expectedChange.toString(), changes.get(0).toString());
+        assertEquals(expectedChange, changes.get(0));
         assertEquals(expectedEntry, entry); 
     }
 
@@ -161,7 +161,7 @@ public class RemoveLinksToNotExistentFilesTest {
         fileBefore.toFile().delete();
         List<FieldChange> changes = removeLinks.cleanup(entry);
 
-        assertEquals(expectedChange.toString(), changes.get(0).toString());
+        assertEquals(expectedChange, changes.get(0));
         assertEquals(expectedEntry, entry); 
     }
 
