@@ -164,5 +164,4 @@ public class RemoveLinksToNotExistentFilesTest {
         assertEquals(expectedChange, changes.get(0));
         assertEquals(expectedEntry, entry); 
     }
-
 }
