@@ -40,11 +40,10 @@ public class RemoveLinksToNotExistentFilesTest {
         defaultFileFolder = bibFolder.resolve("pdf");
         Files.createDirectory(defaultFileFolder);
 
-        // The folder where the files are located originally
-        Path fileFolder = bibFolder.resolve("files");
+        Path originalFileFolder = bibFolder.resolve("files");
         Path testBibFolder = bibFolder.resolve("test.bib");
-        Files.createDirectory(fileFolder);
-        fileBefore = fileFolder.resolve("test.pdf");
+        Files.createDirectory(originalFileFolder);
+        fileBefore = originalFileFolder.resolve("test.pdf");
         Files.createFile(fileBefore);
 
         MetaData metaData = new MetaData();
