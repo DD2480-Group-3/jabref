@@ -101,7 +101,11 @@ public class RemoveLinksToNotExistentFilesTest {
                 .withField(StandardField.VOLUME, "16")
                 .withField(StandardField.KEYWORDS, "Batteries, Generators, Economics, Power quality, State of charge, Harmonic analysis, Control systems, Battery, diesel generator (DG), distributed generation, power quality, photovoltaic (PV), voltage source converter (VSC)");
 
-        fileBefore.toFile().delete();
+        try {
+            Files.delete(fileBefore);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         List<FieldChange> changes = removeLinks.cleanup(entry);
 
         assertEquals(expectedChange, changes.getFirst());
@@ -155,7 +159,11 @@ public class RemoveLinksToNotExistentFilesTest {
                 .withField(StandardField.VOLUME, "16")
                 .withField(StandardField.KEYWORDS, "Batteries, Generators, Economics, Power quality, State of charge, Harmonic analysis, Control systems, Battery, diesel generator (DG), distributed generation, power quality, photovoltaic (PV), voltage source converter (VSC)");
 
-        fileBefore.toFile().delete();
+        try {
+            Files.delete(fileBefore);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         List<FieldChange> changes = removeLinks.cleanup(entry);
 
         assertEquals(expectedChange, changes.getFirst());
