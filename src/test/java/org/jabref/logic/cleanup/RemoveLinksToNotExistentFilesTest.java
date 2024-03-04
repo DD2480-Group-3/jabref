@@ -21,7 +21,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -104,7 +103,7 @@ public class RemoveLinksToNotExistentFilesTest {
         Files.delete(fileBefore);
         List<FieldChange> changes = removeLinks.cleanup(entry);
 
-        assertEquals(expectedChange, changes.getFirst());
+        assertEquals(List.of(expectedChange), changes);
         assertEquals(expectedEntry, entry);
     }
 
@@ -130,7 +129,7 @@ public class RemoveLinksToNotExistentFilesTest {
 
         List<FieldChange> changes = removeLinks.cleanup(entry);
 
-        assertTrue(changes.isEmpty());
+        assertEquals(List.of(), changes);
         assertEquals(expectedEntry, entry);
     }
 
@@ -160,7 +159,7 @@ public class RemoveLinksToNotExistentFilesTest {
         Files.delete(fileBefore);
         List<FieldChange> changes = removeLinks.cleanup(entry);
 
-        assertEquals(expectedChange, changes.getFirst());
+        assertEquals(List.of(expectedChange), changes);
         assertEquals(expectedEntry, entry);
     }
 }
