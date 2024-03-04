@@ -77,7 +77,7 @@ public class RemoveLinksToNotExistentFilesTest {
     }
 
     @Test
-    void deleteFileInEntryWithMultipleFileLinks() {
+    void deleteFileInEntryWithMultipleFileLinks() throws IOException {
         LinkedFile fileField = new LinkedFile("", fileBefore.toAbsolutePath(), "");
         FieldChange expectedChange = new FieldChange(entry, StandardField.FILE,
             FileFieldWriter.getStringRepresentation(List.of(
@@ -101,11 +101,7 @@ public class RemoveLinksToNotExistentFilesTest {
                 .withField(StandardField.VOLUME, "16")
                 .withField(StandardField.KEYWORDS, "Batteries, Generators, Economics, Power quality, State of charge, Harmonic analysis, Control systems, Battery, diesel generator (DG), distributed generation, power quality, photovoltaic (PV), voltage source converter (VSC)");
 
-        try {
-            Files.delete(fileBefore);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        Files.delete(fileBefore);
         List<FieldChange> changes = removeLinks.cleanup(entry);
 
         assertEquals(expectedChange, changes.getFirst());
@@ -139,7 +135,7 @@ public class RemoveLinksToNotExistentFilesTest {
     }
 
     @Test
-    void deleteLinkedFile() {
+    void deleteLinkedFile() throws IOException {
         LinkedFile fileField = new LinkedFile("", fileBefore.toAbsolutePath(), "");
 
         // There is only one linked file in entry
@@ -161,11 +157,7 @@ public class RemoveLinksToNotExistentFilesTest {
                 .withField(StandardField.VOLUME, "16")
                 .withField(StandardField.KEYWORDS, "Batteries, Generators, Economics, Power quality, State of charge, Harmonic analysis, Control systems, Battery, diesel generator (DG), distributed generation, power quality, photovoltaic (PV), voltage source converter (VSC)");
 
-        try {
-            Files.delete(fileBefore);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        Files.delete(fileBefore);
         List<FieldChange> changes = removeLinks.cleanup(entry);
 
         assertEquals(expectedChange, changes.getFirst());
