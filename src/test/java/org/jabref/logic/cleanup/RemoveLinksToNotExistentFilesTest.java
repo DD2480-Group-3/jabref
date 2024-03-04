@@ -3,7 +3,6 @@ package org.jabref.logic.cleanup;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.List;
 
 import org.jabref.logic.bibtex.FileFieldWriter;
@@ -60,7 +59,7 @@ public class RemoveLinksToNotExistentFilesTest {
                 .withField(StandardField.DATE, "April 2020")
                 .withField(StandardField.YEAR, "2020")
                 .withField(StandardField.DOI, "10.1109/TII.2019.2935531")
-                .withField(StandardField.FILE, FileFieldWriter.getStringRepresentation(Arrays.asList(
+                .withField(StandardField.FILE, FileFieldWriter.getStringRepresentation(List.of(
                     new LinkedFile("", "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8801912:PDF", ""),
                     fileField)))
                 .withField(StandardField.ISSUE, "4")
@@ -81,7 +80,7 @@ public class RemoveLinksToNotExistentFilesTest {
     void deleteFileInMultipleLinkedEntry() {
         LinkedFile fileField = new LinkedFile("", fileBefore.toAbsolutePath(), "");
         FieldChange expectedChange = new FieldChange(entry, StandardField.FILE,
-            FileFieldWriter.getStringRepresentation(Arrays.asList(
+            FileFieldWriter.getStringRepresentation(List.of(
             new LinkedFile("", "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8801912:PDF", ""),
             fileField)),
             FileFieldWriter.getStringRepresentation(new LinkedFile("", "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8801912:PDF", ""))
@@ -117,7 +116,7 @@ public class RemoveLinksToNotExistentFilesTest {
                 .withField(StandardField.DATE, "April 2020")
                 .withField(StandardField.YEAR, "2020")
                 .withField(StandardField.DOI, "10.1109/TII.2019.2935531")
-                .withField(StandardField.FILE, FileFieldWriter.getStringRepresentation(Arrays.asList(
+                .withField(StandardField.FILE, FileFieldWriter.getStringRepresentation(List.of(
                     new LinkedFile("", "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8801912:PDF", ""),
                     fileField)))
                 .withField(StandardField.ISSUE, "4")
