@@ -77,7 +77,7 @@ public class RemoveLinksToNotExistentFilesTest {
     }
 
     @Test
-    void deleteFileInMultipleLinkedEntry() {
+    void deleteFileInEntryWithMultipleFileLinks() {
         LinkedFile fileField = new LinkedFile("", fileBefore.toAbsolutePath(), "");
         FieldChange expectedChange = new FieldChange(entry, StandardField.FILE,
             FileFieldWriter.getStringRepresentation(List.of(
