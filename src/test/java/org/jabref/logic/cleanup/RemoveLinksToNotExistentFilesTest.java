@@ -141,7 +141,9 @@ public class RemoveLinksToNotExistentFilesTest {
     @Test
     void deleteLinkedFile() {
         LinkedFile fileField = new LinkedFile("", fileBefore.toAbsolutePath(), "");
-        entry.setField(StandardField.FILE, FileFieldWriter.getStringRepresentation(fileField)); // There is only one linked file in entry
+
+        // There is only one linked file in entry
+        entry.setField(StandardField.FILE, FileFieldWriter.getStringRepresentation(fileField));
         FieldChange expectedChange = new FieldChange(entry, StandardField.FILE,
             FileFieldWriter.getStringRepresentation(fileField),
             null);
