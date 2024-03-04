@@ -27,7 +27,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class RemoveLinksToNotExistentFilesTest {
-    private Path defaultFileFolder;
+    private Path newFileFolder;
     private Path fileBefore;
     private BibEntry entry;
     private FilePreferences filePreferences;
@@ -37,8 +37,8 @@ public class RemoveLinksToNotExistentFilesTest {
     @BeforeEach
     void setUp(@TempDir Path bibFolder) throws IOException {
         // The folder where the files should be moved to
-        defaultFileFolder = bibFolder.resolve("pdf");
-        Files.createDirectory(defaultFileFolder);
+        newFileFolder = bibFolder.resolve("pdf");
+        Files.createDirectory(newFileFolder);
 
         Path originalFileFolder = bibFolder.resolve("files");
         Path testBibFolder = bibFolder.resolve("test.bib");
@@ -47,7 +47,7 @@ public class RemoveLinksToNotExistentFilesTest {
         Files.createFile(fileBefore);
 
         MetaData metaData = new MetaData();
-        metaData.setDefaultFileDirectory(defaultFileFolder.toAbsolutePath().toString());
+        metaData.setDefaultFileDirectory(newFileFolder.toAbsolutePath().toString());
         databaseContext = new BibDatabaseContext(new BibDatabase(), metaData);
         Files.createFile(testBibFolder);
         databaseContext.setDatabasePath(testBibFolder);
