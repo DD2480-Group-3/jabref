@@ -25,17 +25,14 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class RemoveLinksToNotExistentFilesTest {
-    private Path newFileFolder;
     private Path fileBefore;
     private BibEntry entry;
-    private FilePreferences filePreferences;
-    private BibDatabaseContext databaseContext;
     private RemoveLinksToNotExistentFiles removeLinks;
 
     @BeforeEach
     void setUp(@TempDir Path bibFolder) throws IOException {
         // The folder where the files should be moved to
-        newFileFolder = bibFolder.resolve("pdf");
+        Path newFileFolder = bibFolder.resolve("pdf");
         Files.createDirectory(newFileFolder);
 
         Path originalFileFolder = bibFolder.resolve("files");
@@ -46,7 +43,8 @@ public class RemoveLinksToNotExistentFilesTest {
 
         MetaData metaData = new MetaData();
         metaData.setDefaultFileDirectory(newFileFolder.toAbsolutePath().toString());
-        databaseContext = new BibDatabaseContext(new BibDatabase(), metaData);
+
+        BibDatabaseContext databaseContext = new BibDatabaseContext(new BibDatabase(), metaData);
         Files.createFile(testBibFolder);
         databaseContext.setDatabasePath(testBibFolder);
 
@@ -70,7 +68,7 @@ public class RemoveLinksToNotExistentFilesTest {
                 .withField(StandardField.VOLUME, "16")
                 .withField(StandardField.KEYWORDS, "Batteries, Generators, Economics, Power quality, State of charge, Harmonic analysis, Control systems, Battery, diesel generator (DG), distributed generation, power quality, photovoltaic (PV), voltage source converter (VSC)");
 
-        filePreferences = mock(FilePreferences.class);
+        FilePreferences filePreferences = mock(FilePreferences.class);
         when(filePreferences.shouldStoreFilesRelativeToBibFile()).thenReturn(false);
         removeLinks = new RemoveLinksToNotExistentFiles(databaseContext, filePreferences);
     }
