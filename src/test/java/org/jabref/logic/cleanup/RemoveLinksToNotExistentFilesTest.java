@@ -3,7 +3,6 @@ package org.jabref.logic.cleanup;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.List;
 
 import org.jabref.logic.bibtex.FileFieldWriter;
@@ -22,35 +21,32 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class RemoveLinksToNotExistentFilesTest {
-    private Path defaultFileFolder;
     private Path fileBefore;
     private BibEntry entry;
-    private FilePreferences filePreferences;
-    private BibDatabaseContext databaseContext;
     private RemoveLinksToNotExistentFiles removeLinks;
 
     @BeforeEach
     void setUp(@TempDir Path bibFolder) throws IOException {
         // The folder where the files should be moved to
-        defaultFileFolder = bibFolder.resolve("pdf");
-        Files.createDirectory(defaultFileFolder);
+        Path newFileFolder = bibFolder.resolve("pdf");
+        Files.createDirectory(newFileFolder);
 
-        // The folder where the files are located originally
-        Path fileFolder = bibFolder.resolve("files");
-        Files.createDirectory(fileFolder);
-        fileBefore = fileFolder.resolve("test.pdf");
+        Path originalFileFolder = bibFolder.resolve("files");
+        Path testBibFolder = bibFolder.resolve("test.bib");
+        Files.createDirectory(originalFileFolder);
+        fileBefore = originalFileFolder.resolve("test.pdf");
         Files.createFile(fileBefore);
 
         MetaData metaData = new MetaData();
-        metaData.setDefaultFileDirectory(defaultFileFolder.toAbsolutePath().toString());
-        databaseContext = new BibDatabaseContext(new BibDatabase(), metaData);
-        Files.createFile(bibFolder.resolve("test.bib"));
-        databaseContext.setDatabasePath(bibFolder.resolve("test.bib"));
+        metaData.setDefaultFileDirectory(newFileFolder.toAbsolutePath().toString());
+
+        BibDatabaseContext databaseContext = new BibDatabaseContext(new BibDatabase(), metaData);
+        Files.createFile(testBibFolder);
+        databaseContext.setDatabasePath(testBibFolder);
 
         LinkedFile fileField = new LinkedFile("", fileBefore.toAbsolutePath(), "");
 
@@ -60,8 +56,8 @@ public class RemoveLinksToNotExistentFilesTest {
                 .withField(StandardField.DATE, "April 2020")
                 .withField(StandardField.YEAR, "2020")
                 .withField(StandardField.DOI, "10.1109/TII.2019.2935531")
-                .withField(StandardField.FILE, FileFieldWriter.getStringRepresentation(Arrays.asList(
-                    new LinkedFile("", "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8801912:PDF", ""),
+                .withField(StandardField.FILE, FileFieldWriter.getStringRepresentation(List.of(
+                    new LinkedFile("", "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8801912", "PDF"),
                     fileField)))
                 .withField(StandardField.ISSUE, "4")
                 .withField(StandardField.ISSN, "1941-0050")
@@ -72,40 +68,40 @@ public class RemoveLinksToNotExistentFilesTest {
                 .withField(StandardField.VOLUME, "16")
                 .withField(StandardField.KEYWORDS, "Batteries, Generators, Economics, Power quality, State of charge, Harmonic analysis, Control systems, Battery, diesel generator (DG), distributed generation, power quality, photovoltaic (PV), voltage source converter (VSC)");
 
-        filePreferences = mock(FilePreferences.class);
+        FilePreferences filePreferences = mock(FilePreferences.class);
         when(filePreferences.shouldStoreFilesRelativeToBibFile()).thenReturn(false);
         removeLinks = new RemoveLinksToNotExistentFiles(databaseContext, filePreferences);
     }
 
     @Test
-    void deleteFileInMultipleLinkedEntry() {
+    void deleteFileInEntryWithMultipleFileLinks() throws IOException {
         LinkedFile fileField = new LinkedFile("", fileBefore.toAbsolutePath(), "");
         FieldChange expectedChange = new FieldChange(entry, StandardField.FILE,
-            FileFieldWriter.getStringRepresentation(Arrays.asList(
-            new LinkedFile("", "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8801912:PDF", ""),
+            FileFieldWriter.getStringRepresentation(List.of(
+            new LinkedFile("", "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8801912", "PDF"),
             fileField)),
-            FileFieldWriter.getStringRepresentation(new LinkedFile("", "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8801912:PDF", ""))
+            FileFieldWriter.getStringRepresentation(new LinkedFile("", "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8801912", "PDF"))
         );
         BibEntry expectedEntry = new BibEntry(StandardEntryType.Article)
-        .withField(StandardField.AUTHOR, "Shatakshi Sharma and Bhim Singh and Sukumar Mishra")
-        .withField(StandardField.DATE, "April 2020")
-        .withField(StandardField.YEAR, "2020")
-        .withField(StandardField.DOI, "10.1109/TII.2019.2935531")
-        .withField(StandardField.FILE, FileFieldWriter.getStringRepresentation(
-            new LinkedFile("", "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8801912:PDF", "")))
-        .withField(StandardField.ISSUE, "4")
-        .withField(StandardField.ISSN, "1941-0050")
-        .withField(StandardField.JOURNALTITLE, "IEEE Transactions on Industrial Informatics")
-        .withField(StandardField.PAGES, "2346--2356")
-        .withField(StandardField.PUBLISHER, "IEEE")
-        .withField(StandardField.TITLE, "Economic Operation and Quality Control in PV-BES-DG-Based Autonomous System")
-        .withField(StandardField.VOLUME, "16")
-        .withField(StandardField.KEYWORDS, "Batteries, Generators, Economics, Power quality, State of charge, Harmonic analysis, Control systems, Battery, diesel generator (DG), distributed generation, power quality, photovoltaic (PV), voltage source converter (VSC)");
+                .withField(StandardField.AUTHOR, "Shatakshi Sharma and Bhim Singh and Sukumar Mishra")
+                .withField(StandardField.DATE, "April 2020")
+                .withField(StandardField.YEAR, "2020")
+                .withField(StandardField.DOI, "10.1109/TII.2019.2935531")
+                .withField(StandardField.FILE, FileFieldWriter.getStringRepresentation(
+                    new LinkedFile("", "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8801912", "PDF")))
+                .withField(StandardField.ISSUE, "4")
+                .withField(StandardField.ISSN, "1941-0050")
+                .withField(StandardField.JOURNALTITLE, "IEEE Transactions on Industrial Informatics")
+                .withField(StandardField.PAGES, "2346--2356")
+                .withField(StandardField.PUBLISHER, "IEEE")
+                .withField(StandardField.TITLE, "Economic Operation and Quality Control in PV-BES-DG-Based Autonomous System")
+                .withField(StandardField.VOLUME, "16")
+                .withField(StandardField.KEYWORDS, "Batteries, Generators, Economics, Power quality, State of charge, Harmonic analysis, Control systems, Battery, diesel generator (DG), distributed generation, power quality, photovoltaic (PV), voltage source converter (VSC)");
 
-        fileBefore.toFile().delete();
+        Files.delete(fileBefore);
         List<FieldChange> changes = removeLinks.cleanup(entry);
 
-        assertEquals(expectedChange, changes.getFirst());
+        assertEquals(List.of(expectedChange), changes);
         assertEquals(expectedEntry, entry);
     }
 
@@ -117,8 +113,8 @@ public class RemoveLinksToNotExistentFilesTest {
                 .withField(StandardField.DATE, "April 2020")
                 .withField(StandardField.YEAR, "2020")
                 .withField(StandardField.DOI, "10.1109/TII.2019.2935531")
-                .withField(StandardField.FILE, FileFieldWriter.getStringRepresentation(Arrays.asList(
-                    new LinkedFile("", "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8801912:PDF", ""),
+                .withField(StandardField.FILE, FileFieldWriter.getStringRepresentation(List.of(
+                    new LinkedFile("", "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8801912", "PDF"),
                     fileField)))
                 .withField(StandardField.ISSUE, "4")
                 .withField(StandardField.ISSN, "1941-0050")
@@ -131,14 +127,16 @@ public class RemoveLinksToNotExistentFilesTest {
 
         List<FieldChange> changes = removeLinks.cleanup(entry);
 
-        assertTrue(changes.isEmpty());
+        assertEquals(List.of(), changes);
         assertEquals(expectedEntry, entry);
     }
 
     @Test
-    void deleteLinkedFile() {
+    void deleteLinkedFile() throws IOException {
         LinkedFile fileField = new LinkedFile("", fileBefore.toAbsolutePath(), "");
-        entry.setField(StandardField.FILE, FileFieldWriter.getStringRepresentation(fileField)); // There is only one linked file in entry
+
+        // There is only one linked file in entry
+        entry.setField(StandardField.FILE, FileFieldWriter.getStringRepresentation(fileField));
         FieldChange expectedChange = new FieldChange(entry, StandardField.FILE,
             FileFieldWriter.getStringRepresentation(fileField),
             null);
@@ -156,10 +154,10 @@ public class RemoveLinksToNotExistentFilesTest {
                 .withField(StandardField.VOLUME, "16")
                 .withField(StandardField.KEYWORDS, "Batteries, Generators, Economics, Power quality, State of charge, Harmonic analysis, Control systems, Battery, diesel generator (DG), distributed generation, power quality, photovoltaic (PV), voltage source converter (VSC)");
 
-        fileBefore.toFile().delete();
+        Files.delete(fileBefore);
         List<FieldChange> changes = removeLinks.cleanup(entry);
 
-        assertEquals(expectedChange, changes.getFirst());
+        assertEquals(List.of(expectedChange), changes);
         assertEquals(expectedEntry, entry);
     }
 }
